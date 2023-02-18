@@ -1,6 +1,9 @@
 import { Configuration, OpenAIApi} from 'openai';
 import * as dotenv from 'dotenv';
 
+import snoowrap from 'snoowrap';
+
+
 dotenv.config();
 
 const configuration = new Configuration({
@@ -28,3 +31,25 @@ async function summarizeText(text) {
 const text = 'This is an example Reddit post.';
 const summary = await summarizeText(text);
 console.log(summary);
+
+
+const reddit = new snoowrap({
+  userAgent: 'open-ai-bot/1.0.0',
+  clientId: process.env.REDDIT_CLIENT_ID,
+  clientSecret: process.env.REDDIT_CLIENT_SECRET,
+  username: process.env.REDDIT_USERNAME,
+  password: process.env.REDDIT_PASSWORD
+});
+
+// Listen for new Reddit posts and summarize them
+// reddit.getSubreddit('coding').stream({ type: 'submission' })
+//   .on('submission', async (post) => {
+//     // Only summarize text-based posts
+//     if (post.is_self) {
+//       const summary = await summarizeText(post.selftext);
+//       console.log(`Summary for post "${post.title}": ${summary}`);
+//     }
+//   });
+
+  reddit.getHot().map(post => post.title).then(console.log);
+
